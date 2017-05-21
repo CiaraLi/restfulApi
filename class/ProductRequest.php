@@ -11,16 +11,54 @@
  *
  * @author chenglongliu
  */
-class ProductRequest extends Request{
-     
-    function getProduct($param=null) {
-        return array(
-            'all products'=>WEBURL."product",
-            'show product'=>WEBURL."/product/1");
-    } 
-    function postProduct($param=null) {
-        return array(
-            'all products'=>WEBURL."product",
-            'show product'=>WEBURL."/product/1");
-    } 
+class ProductRequest extends Request {
+
+    function getProduct($param = null) {
+        $mysql = Mysql::getInstance();
+        $sql = 'select * from books';
+        if (!empty($param)) {
+            $sql.=' where id ="' . intval($param) . '"';
+        }
+        return $mysql->setQuery($sql)->row();
+    }
+
+    function postProduct() {
+        $mysql = Mysql::getInstance();
+        if (!empty($this->postData('title')) && !empty($this->postData('isbn'))) {
+            $title = addslashes($this->postData('title'));
+            $isbn = addslashes($this->postData('isbn'));
+            $mysql->setQuery('insert into books set isbn="' . $isbn . '" ,title="' . $title . '"')->run();
+            return $mysql->getbyid('books');
+        } else {
+            return ['code' => -1, 'error' => 'invalid params'];
+        }
+    }
+
+    function putProduct($param = null) {
+        $mysql = Mysql::getInstance();
+
+        $put = self::$postData;
+        if (!empty($param) && !empty($put['title']) && !empty($put['isbn'])) {
+            $title = addslashes($put['title']);
+            $isbn = addslashes($put['isbn']);
+            $mysql->setQuery('update books set isbn="' . $isbn . '" ,title="' . $title . '"'
+                    . ' where id="' . intval($param) . '"')->run();
+            return $mysql->getbyid('books', intval($param));
+        } else {
+            return ['code' => -1, 'error' => 'invalid params'];
+        }
+    }
+
+    function deleteProduct($param = null) {
+        $mysql = Mysql::getInstance();
+        $sql = 'delete  from books';
+        $sql.=' where id ="' . intval($param) . '"';
+
+        return $mysql->setQuery($sql)->run();
+    }
+
+    function patchProduct() {
+        
+    }
+
 }

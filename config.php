@@ -2,11 +2,11 @@
 
 define('DBHOST', '127.0.0.1');
 define('DBUSERNAME', 'root');
-define('DBPASSWORD', '');
-define('DBNAME', '');
+define('DBPASSWORD', 'root');
+define('DBNAME', 'blogtest');
 
 define('WEBURL', 'http://localhost:81/restfulApi/');
-
+define('HTTP_VERSION', 'HTTP/1.1');
 
 $_DATABASE=
 <<<mysql
