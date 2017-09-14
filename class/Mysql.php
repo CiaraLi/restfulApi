@@ -41,10 +41,22 @@ class Mysql {
                 self::$conn = null;
                 exit;
             }
-            $tables=<<<sql
-                    create table if not exists books(id int(11) auto_increment primary key,title varchar(15),isbn varchar(15) unique);
-sql;
-            $table=mysqli_query(self::$conn, $tables); 
+            $tables = 'create table if not exists books(
+               id int(11) auto_increment primary key,
+               title varchar(15),
+               user varchar(20),
+               isbn varchar(15) unique,
+               createat timestamp default now()
+        );';
+            $table = mysqli_query(self::$conn, $tables);
+            
+             $tables = 'create table if not exists users(
+               id int(11) auto_increment primary key,
+               user varchar(20),
+               password varchar(50),
+               createat timestamp default now()
+        );';
+            $table = mysqli_query(self::$conn, $tables); 
 //            self::$stmt = mysqli_stmt_init(self::$conn);
         }
         return self::$instance;
@@ -63,7 +75,7 @@ sql;
      * @return type
      */
     public function setQuery($query, $params = array()) {
-       $this->query=$query;
+        $this->query = $query;
 //        $stmt=mysqli_stmt_prepare(self::$stmt, $query); 
 //        if ($stmt) {
 //            foreach ($params as $k => $v) {
@@ -74,37 +86,38 @@ sql;
         return self::$instance;
     }
 
-    function getbyid($table,$id="") {
-        if(empty($id)){
-            $id=  self::$id;
+    function getbyid($table, $id = "") {
+        if (empty($id)) {
+            $id = self::$id;
         }
-        $this->setQuery('select * from '.$table.' where id="'.$id.'"');
+        $this->setQuery('select * from ' . $table . ' where id="' . $id . '"');
         return $this->row();
     }
-    
+
     public function run() {
 //        mysqli_stmt_execute(self::$stmt); 
 //        self::$id= mysqli_insert_id(self::$stmt);
 //        return mysql_stmt_affected_rows(); 
         mysqli_query(self::$conn, $this->query);
-        self::$id= mysqli_insert_id(self::$conn);
+        self::$id = mysqli_insert_id(self::$conn);
         return mysqli_affected_rows(self::$conn);
-        
     }
 
-    public function row() { 
+    public function row() {
         $array = array();
 //        mysqli_stmt_bind_result(self::$stmt, $array);
 //        mysqli_stmt_fetch(self::$stmt);
         $result = mysqli_query(self::$conn, $this->query);
-        while ($row = mysqli_fetch_array($result)) {
-            array_push($array, $row);
+        if ($result) {
+            while ($row = mysqli_fetch_array($result)) {
+                array_push($array, $row);
+            }
         }
         return $array;
     }
 
     public function first() {
-        $result = mysqli_query(self::$conn, $this->query); 
+        $result = mysqli_query(self::$conn, $this->query);
         $row = mysqli_fetch_array($result);
         return $row;
     }
