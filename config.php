@@ -7,6 +7,7 @@ define('DBNAME', 'blogtest');
 
 define('WEBURL', 'http://localhost:81/restfulApi/');
 define('HTTP_VERSION', 'HTTP/1.1');
+define('AUTHSECRET', 'auth');
 
 $_DATABASE=
 <<<mysql

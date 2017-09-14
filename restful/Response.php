@@ -58,16 +58,17 @@ class Response {
     function parseData($data,$code='200') { 
         header(HTTP_VERSION . " " . $code . " " . self::$codes[intval($code)]);
         $content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : $_SERVER['HTTP_ACCEPT'];
-        if (strpos($content_type, 'application/json') !== false) {
-            header("Content-Type: application/json");
+        if (strpos($content_type, 'text/html') !== false) {
+            header("Content-Type: text/html");
             echo self::parseHtml($data);
         } else if (strpos($content_type, 'application/xml') !== false) {
             header("Content-Type: application/xml");
             echo self::parseXml($data);
         } else {
-            header("Content-Type: text/html");
+            header("Content-Type: application/json");
             echo self::parseJson($data);
         }
+        exit();
     }
 
 }

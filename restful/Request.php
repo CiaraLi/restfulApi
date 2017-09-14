@@ -20,7 +20,7 @@ class Request {
 
     function postData($key) {
         $method = strtolower($_SERVER['REQUEST_METHOD']); 
-        if (in_array($method, ['put'])) {
+        if (in_array($method, ['put','patch'])) {
             $input = file_get_contents("php://input"); //接收POST数据  
             $input = $this->parsePut($input); 
             $post=  array_merge($_REQUEST,$input); 
@@ -30,7 +30,7 @@ class Request {
         }
     }
 
-    function parsePut($put) {
+    private function parsePut($put) {
         $match = array();
         $str = "/(name=\"(.*)\"(.*)[-])+/isU";
         preg_match_all($str, $put, $match);

@@ -22,11 +22,18 @@ $list = json_decode($json, true);
 if (count($list)) {
     $rand = $list[rand(0, count($list) - 1)]['id'];
     $url = APIURL.'api/product/' . intval($rand);
-    $data = array('isbn' => '1' . $rand, 'title' => 'book' . $rand);
+    $data = array('isbn' => '1' . rand(), 'title' => 'book' . rand());
     $ch->putdata($url, ($data));
     print_r("\r\n<br/>---修改图书:$rand --- \r\n<br/>");
     echo $ch->run();
 
+    $rand = $list[rand(0, count($list) - 1)]['id'];
+    $url = APIURL.'api/product/' . intval($rand);
+    $data = array('title' => 'book' . rand());
+    $ch->patchdata($url, ($data));
+    print_r("\r\n<br/>---修改图书部分信息:$rand --- \r\n<br/>");
+    echo $ch->run();
+    
     $rand = rand(-1, count($list) - 1);
     if ($rand > 0) {
         $id=$list[$rand]['id'];
